@@ -1,0 +1,24 @@
+import math
+
+physics = [15, 12, 8, 8, 7, 7, 7, 6, 5, 3]
+History = [10, 25, 17, 11, 13, 17, 20, 13, 9,  15]
+
+n = len(physics)
+
+physic_mean = sum(physics)/n
+History_mean = sum(History)/n
+
+numerator = sum(
+    (physics[i] - physic_mean) * (History[i] - History_mean)
+    for i in range(n)
+)
+
+denominator = math.sqrt(
+    sum((physics[i] - physic_mean) ** 2 for i in range(n)) *
+    sum((History[i] - History_mean) ** 2 for i in range(n))
+)
+
+
+r = numerator / denominator
+
+print(f"{r:3f}")
