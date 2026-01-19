@@ -1,0 +1,23 @@
+# Physics and History scores
+physics = [15, 12, 8, 8, 7, 7, 7, 6, 5, 3]
+history = [10, 25, 17, 11, 13, 17, 20, 13, 9, 15]
+
+n = len(physics)
+
+# Calculate means
+mean_x = sum(physics) / n
+mean_y = sum(history) / n
+
+# Calculate numerator and denominator for slope
+numerator = 0
+denominator = 0
+
+for i in range(n):
+    numerator += (physics[i] - mean_x) * (history[i] - mean_y)
+    denominator += (physics[i] - mean_x) ** 2
+
+# Slope of regression line
+slope = numerator / denominator
+
+# Print result rounded to 3 decimal places
+print(round(slope, 3))
