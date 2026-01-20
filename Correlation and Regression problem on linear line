@@ -1,0 +1,17 @@
+def estimate_x(y_value):
+    """
+    Estimates the value of x given y using the regression line 
+    of x on y: 20x - 9y - 107 = 0
+    """
+    # Rearranging for x: x = (9y + 107) / 20
+    x_value = (9 * y_value + 107) / 20
+    return x_value
+
+# Given value of y
+y = 7
+
+# Perform calculation
+result = estimate_x(y)
+
+# Output formatted to one decimal place
+print(f"{result:.1f}")
