@@ -1,0 +1,38 @@
+import math
+from collections import Counter
+
+#take input
+n = int(input().strip())
+arr = list(map(int, input().split()))
+
+arr.sort()
+
+#mean
+mean = sum(arr)/n
+
+#median
+if n % 2 == 1:
+    median = arr[n // 2]
+else:
+    median = (arr[n // 2 - 1] + arr[n // 2])/2
+    
+#for mode
+freq = Counter(arr)
+max_freq = max(freq.values())
+mode = min(key for key , value in freq.items() if value == max_freq)
+
+#standard deviation
+variance = sum((x - mean) ** 2 for x in arr)/n
+std_dev = math.sqrt(variance)
+
+# Confidence Interval
+margin = 1.96 * (std_dev / math.sqrt(n))
+lower = mean - margin
+upper = mean + margin
+
+# Output
+print(f"{mean:.1f}")
+print(f"{median:.1f}")
+print(mode)
+print(f"{std_dev:.1f}")
+print(f"{lower:.1f} {upper:.1f}")
