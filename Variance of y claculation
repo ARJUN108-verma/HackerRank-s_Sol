@@ -1,0 +1,14 @@
+import math
+
+b_yx = 4 / 5
+b_xy = 9 / 20
+
+sigma_x = 3
+
+r = math.sqrt(b_yx * b_xy)
+
+sigma_y = (b_yx / r) * sigma_x
+
+var_y = sigma_y ** 2
+
+print(round(var_y, 1))
