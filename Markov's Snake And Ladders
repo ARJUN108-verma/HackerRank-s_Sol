@@ -1,0 +1,49 @@
+import random
+
+T = int(input().strip())
+
+for _ in range(T):
+    prob = list(map(float, input().split(',')))
+
+    ls = input().split(',')
+    ladders_count = int(ls[0])
+    snakes_count = int(ls[1])
+
+    ladders_line = input().strip()
+    snakes_line = input().strip()
+
+    jump_map = {}
+
+    if ladders_line:
+        pairs = ladders_line.split()
+        for p in pairs:
+            a, b = p.split(',')
+            jump_map[int(a)] = int(b)
+
+    if snakes_line:
+        pairs = snakes_line.split()
+        for p in pairs:
+            a, b = p.split(',')
+            jump_map[int(a)] = int(b)
+
+    total_rolls = 0
+    completed = 0
+
+    for _ in range(5000):
+        pos = 1
+        rolls = 0
+
+        while pos != 100 and rolls < 1000:
+            rolls += 1
+            move = random.choices([1, 2, 3, 4, 5, 6], weights=prob)[0]
+
+            if pos + move <= 100:
+                pos += move
+                if pos in jump_map:
+                    pos = jump_map[pos]
+
+        if pos == 100:
+            total_rolls += rolls
+            completed += 1
+
+    print(int(total_rolls / completed))
