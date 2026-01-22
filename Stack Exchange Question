@@ -1,0 +1,46 @@
+import sys
+import json
+
+# Keyword-based categories
+KEYWORDS = {
+    "scifi": ["time travel", "sci-fi", "science fiction", "paradox"],
+    "wordpress": ["wordpress", "plugin", "post", "hyperlink"],
+    "gis": ["polygon", "clip", "map", "geospatial"],
+    "photo": ["photo", "image", "jpeg", "png"],
+    "unix": ["unix", "linux", "shell", "bash"],
+    "security": ["security", "hack", "vulnerability", "attack"],
+    "apple": ["apple", "mac", "ios", "iphone"],
+    "android": ["android", "apk", "play store", "java"],
+    "mathematica": ["mathematica", "wolfram", "plot", "symbolic"],
+    "electronics": ["circuit", "voltage", "resistor", "arduino"]
+}
+
+def predict_category(text):
+    text = text.lower()
+    for category, words in KEYWORDS.items():
+        for word in words:
+            if word in text:
+                return category
+    return "unknown"
+
+def solve():
+    input_lines = sys.stdin.read().splitlines()
+    
+    # First line is number of entries (ignore it)
+    n = int(input_lines[0])
+    
+    # Process each JSON line
+    for line in input_lines[1:]:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            data = json.loads(line)
+            combined_text = data.get("question", "") + " " + data.get("excerpt", "")
+            category = predict_category(combined_text)
+            print(category)
+        except json.JSONDecodeError:
+            continue  # skip invalid lines
+
+if __name__ == "__main__":
+    solve()
