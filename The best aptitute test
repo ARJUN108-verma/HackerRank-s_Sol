@@ -1,0 +1,47 @@
+import sys
+
+def rankify(arr):
+    """Assign average ranks to handle ties."""
+    sorted_arr = sorted((val, idx) for idx, val in enumerate(arr))
+    ranks = [0] * len(arr)
+
+    i = 0
+    while i < len(arr):
+        j = i
+        while j < len(arr) and sorted_arr[j][0] == sorted_arr[i][0]:
+            j += 1
+        avg_rank = (i + j + 1) / 2.0
+        for k in range(i, j):
+            ranks[sorted_arr[k][1]] = avg_rank
+        i = j
+
+    return ranks
+
+def spearman_rank_corr(x, y):
+    n = len(x)
+    d2_sum = sum((x[i] - y[i]) ** 2 for i in range(n))
+    return 1 - (6 * d2_sum) / (n * (n**2 - 1))
+
+def solve():
+    T = int(sys.stdin.readline())
+    for _ in range(T):
+        N = int(sys.stdin.readline())
+        gpa = list(map(float, sys.stdin.readline().split()))
+        tests = [list(map(float, sys.stdin.readline().split())) for _ in range(5)]
+
+        gpa_rank = rankify(gpa)
+
+        best_test = 1
+        best_corr = -1
+
+        for i in range(5):
+            test_rank = rankify(tests[i])
+            corr = spearman_rank_corr(gpa_rank, test_rank)
+            if corr > best_corr:
+                best_corr = corr
+                best_test = i + 1
+
+        print(best_test)
+
+if __name__ == "__main__":
+    solve()
