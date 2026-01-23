@@ -1,0 +1,36 @@
+import sys
+from collections import defaultdict
+
+def solve():
+    n = int(sys.stdin.readline())
+    sys.stdin.readline()  # skip header
+
+    # Store known values per month
+    month_stats = defaultdict(lambda: {"tmax": [], "tmin": []})
+
+    # Store missing entries IN ORDER
+    missing_entries = []
+
+    for _ in range(n):
+        line = sys.stdin.readline().rstrip('\n')
+        year, month, tmax, tmin = line.split('\t')
+
+        if "Missing" not in tmax:
+            month_stats[month]["tmax"].append(float(tmax))
+        else:
+            missing_entries.append((month, "tmax"))
+
+        if "Missing" not in tmin:
+            month_stats[month]["tmin"].append(float(tmin))
+        else:
+            missing_entries.append((month, "tmin"))
+
+    # Predict and print
+    for month, kind in missing_entries:
+        values = month_stats[month][kind]
+        prediction = sum(values) / len(values)
+        print(round(prediction, 1))
+
+
+if __name__ == "__main__":
+    solve()
