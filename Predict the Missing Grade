@@ -1,0 +1,73 @@
+import sys
+import json
+from collections import defaultdict
+
+exact_map = defaultdict(list)
+combo_map = defaultdict(list)
+global_math = []
+
+# Load training data
+with open("training.json", "r") as f:
+    first = True
+    for line in f:
+        line = line.strip()
+        if not line:
+            continue
+
+        # Skip first line if it is count
+        if first:
+            first = False
+            try:
+                int(line)
+                continue
+            except:
+                pass
+
+        record = json.loads(line)
+
+        if "Mathematics" not in record:
+            continue
+
+        math_grade = record.pop("Mathematics")
+        global_math.append(math_grade)
+
+        record.pop("SerialNumber", None)
+        record.pop("serial", None)
+
+        exact_key = tuple(sorted(record.items()))
+        combo_key = tuple(sorted(record.keys()))
+
+        exact_map[exact_key].append(math_grade)
+        combo_map[combo_key].append(math_grade)
+
+# Global average fallback
+GLOBAL_AVG = int(round(sum(global_math) / len(global_math)))
+
+def predict_math(record):
+    record.pop("SerialNumber", None)
+    record.pop("serial", None)
+
+    exact_key = tuple(sorted(record.items()))
+    combo_key = tuple(sorted(record.keys()))
+
+    if exact_key in exact_map:
+        vals = exact_map[exact_key]
+    elif combo_key in combo_map and len(combo_map[combo_key]) > 0:
+        vals = combo_map[combo_key]
+    else:
+        return GLOBAL_AVG
+
+    avg = sum(vals) / len(vals)
+    pred = int(round(avg))
+
+    if pred < 1:
+        return 1
+    if pred > 8:
+        return 8
+    return pred
+
+# Read input and predict
+N = int(sys.stdin.readline())
+for _ in range(N):
+    record = json.loads(sys.stdin.readline())
+    print(predict_math(record))
