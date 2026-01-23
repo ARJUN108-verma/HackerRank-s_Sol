@@ -1,0 +1,58 @@
+import sys
+import re
+
+def tokenize(text):
+    return set(re.findall(r"[a-zA-Z]+", text.lower()))
+
+def solve():
+    lines = sys.stdin.read().split("\n")
+    lines = [l.strip() for l in lines if l.strip()]
+
+    i = 0
+    output = []
+
+    while i + 6 < len(lines):
+        paragraph = lines[i]
+        questions = lines[i + 1:i + 6]
+        answers = lines[i + 6].split(";")
+        i += 7
+
+        # Split paragraph into sentences (ASCII only)
+        sentences = re.split(r"[.!?]", paragraph)
+
+        # Map each answer to the sentence containing it
+        answer_sentence = {}
+        for a in answers:
+            for s in sentences:
+                if a in s:
+                    answer_sentence[a] = s
+                    break
+            if a not in answer_sentence:
+                answer_sentence[a] = ""
+
+        used = set()
+
+        for q in questions:
+            q_tokens = tokenize(q)
+            best_answer = None
+            best_score = -1
+
+            for a in answers:
+                if a in used:
+                    continue
+
+                s_tokens = tokenize(answer_sentence[a])
+                score = len(q_tokens & s_tokens)
+
+                if score > best_score:
+                    best_score = score
+                    best_answer = a
+
+            used.add(best_answer)
+            output.append(best_answer)
+
+    sys.stdout.write("\n".join(output))
+
+
+if __name__ == "__main__":
+    solve()
