@@ -1,0 +1,59 @@
+import sys
+
+def main():
+    # Read all input
+    data = sys.stdin.read().strip()
+    
+    if not data:
+        return
+    
+    # Parse the input into a grid of pixels
+    lines = data.split('\n')
+    pixels = []
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        # Split by spaces to get individual pixels
+        pixel_strings = line.split()
+        row_pixels = []
+        
+        for pixel_str in pixel_strings:
+            # Parse B,G,R values
+            b, g, r = map(int, pixel_str.split(','))
+            row_pixels.append((b, g, r))
+        
+        pixels.append(row_pixels)
+    
+    # Calculate brightness for each pixel and get overall statistics
+    total_brightness = 0
+    pixel_count = 0
+    
+    for row in pixels:
+        for b, g, r in row:
+            # Calculate perceived brightness using common formula
+            # Different weights for different color channels based on human perception
+            brightness = 0.299 * r + 0.587 * g + 0.114 * b
+            total_brightness += brightness
+            pixel_count += 1
+    
+    if pixel_count == 0:
+        print("day")  # Default to day if no pixels
+        return
+    
+    # Calculate average brightness
+    avg_brightness = total_brightness / pixel_count
+    
+    # Determine if day or night based on threshold
+    # After analyzing typical day/night images, a threshold around 80-100 seems reasonable
+    # Daytime images are generally brighter
+    
+    if avg_brightness > 90:  # Threshold can be adjusted
+        print("day")
+    else:
+        print("night")
+
+if __name__ == "__main__":
+    main()
