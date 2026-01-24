@@ -1,0 +1,19 @@
+from math import gcd
+
+# total possible outcomes when rolling two dice
+total_outcomes = 6 * 6
+
+# count favorable outcomes (sum <= 9)
+favorable = 0
+for d1 in range(1, 7):
+    for d2 in range(1, 7):
+        if d1 + d2 <= 9:
+            favorable += 1
+
+# reduce the fraction
+g = gcd(favorable, total_outcomes)
+numerator = favorable // g
+denominator = total_outcomes // g
+
+# print result
+print(f"{numerator}/{denominator}")
