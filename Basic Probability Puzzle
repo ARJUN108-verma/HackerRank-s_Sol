@@ -1,0 +1,19 @@
+from math import gcd
+
+def dice_probability(target_sum):
+    total_outcomes = 36
+    favorable = 0
+
+    # Iterate over all outcomes
+    for die1 in range(1, 7):
+        for die2 in range(1, 7):
+            if die1 != die2 and die1 + die2 == target_sum:
+                favorable += 1
+
+    # Reduce the fraction
+    g = gcd(favorable, total_outcomes)
+    return f"{favorable // g}/{total_outcomes // g}"
+
+
+# Example: sum = 6
+print(dice_probability(6))
