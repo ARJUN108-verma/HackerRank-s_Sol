@@ -1,0 +1,32 @@
+image = [
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0]
+]
+
+rows = len(image)
+cols = len(image[0])
+
+# Create output image initialized with zeros
+dilated = [[0 for _ in range(cols)] for _ in range(rows)]
+
+# 3x3 structuring element dilation
+for i in range(rows):
+    for j in range(cols):
+        if image[i][j] == 1:
+            for di in [-1, 0, 1]:
+                for dj in [-1, 0, 1]:
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < rows and 0 <= nj < cols:
+                        dilated[ni][nj] = 1
+
+# Count number of 1s after dilation
+count_ones = sum(sum(row) for row in dilated)
+
+print(count_ones)
