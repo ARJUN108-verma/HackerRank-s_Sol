@@ -1,0 +1,53 @@
+import math
+import re
+from collections import Counter
+
+documents = [
+    "I'd like an apple.",
+    "An apple a day keeps the doctor away.",
+    "Never compare an apple to an orange.",
+    "I prefer scikit-learn to orange."
+]
+
+# --- sklearn-like tokenization (words length >= 2) ---
+def tokenize(text):
+    return re.findall(r'\b[a-z]{2,}\b', text.lower())
+
+# --- Term Frequency ---
+def tf(tokens):
+    counts = Counter(tokens)
+    total = len(tokens)
+    return {w: counts[w] / total for w in counts}
+
+# --- sklearn-style smoothed IDF ---
+def idf(docs_tokens):
+    N = len(docs_tokens)
+    words = set(w for doc in docs_tokens for w in doc)
+    idf_vals = {}
+    for w in words:
+        df = sum(1 for doc in docs_tokens if w in doc)
+        idf_vals[w] = math.log((1 + N) / (1 + df)) + 1
+    return idf_vals
+
+# --- TF-IDF ---
+def tfidf(tf_vals, idf_vals):
+    return {w: tf_vals[w] * idf_vals[w] for w in tf_vals}
+
+# --- Cosine Similarity ---
+def cosine(v1, v2):
+    common = set(v1) & set(v2)
+    num = sum(v1[w] * v2[w] for w in common)
+    den1 = math.sqrt(sum(v * v for v in v1.values()))
+    den2 = math.sqrt(sum(v * v for v in v2.values()))
+    return num / (den1 * den2) if den1 and den2 else 0
+
+# --- Pipeline ---
+tokens = [tokenize(d) for d in documents]
+tf_vals = [tf(t) for t in tokens]
+idf_vals = idf(tokens)
+tfidf_vals = [tfidf(tfv, idf_vals) for tfv in tf_vals]
+
+sims = [cosine(tfidf_vals[0], tfidf_vals[i]) for i in range(1, 4)]
+
+print(sims.index(max(sims)) + 2)
+
