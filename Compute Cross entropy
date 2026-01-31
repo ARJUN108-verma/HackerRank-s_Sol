@@ -1,0 +1,10 @@
+import math
+
+# Given perplexity
+perplexity = 170
+
+# Cross-entropy calculation
+cross_entropy = math.log2(perplexity)
+
+# Print result rounded to 2 decimal places
+print(f"{cross_entropy:.2f}")
