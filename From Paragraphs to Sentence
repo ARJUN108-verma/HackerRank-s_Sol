@@ -1,0 +1,49 @@
+import re
+
+def sentence_segment(text):
+    # Step 1: Fix missing spaces after punctuation
+    text = re.sub(r'([.!?])([A-Z"])', r'\1 \2', text)
+
+    abbreviations = {
+        "mr", "mrs", "dr", "prof", "sr", "jr", "st", "mt"
+    }
+
+    sentences = []
+    current = ""
+    i = 0
+
+    while i < len(text):
+        current += text[i]
+
+        if text[i] in ".!?":
+            # Look behind for abbreviation
+            word = current.strip().split()[-1].lower()
+
+            # Check for initials like W.
+            if re.fullmatch(r"[A-Za-z]\.", word):
+                i += 1
+                continue
+
+            # Check abbreviations
+            if word[:-1] in abbreviations:
+                i += 1
+                continue
+
+            # Valid sentence end
+            sentences.append(current.strip())
+            current = ""
+
+        i += 1
+
+    if current.strip():
+        sentences.append(current.strip())
+
+    return sentences
+
+
+# INPUT
+text = input().strip()
+
+# OUTPUT
+for s in sentence_segment(text):
+    print(s)
