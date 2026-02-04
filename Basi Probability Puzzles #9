@@ -1,0 +1,13 @@
+from fractions import Fraction
+
+# Probabilities of NOT getting selected in each company
+p_not_selected = (
+    Fraction(11, 12) *
+    Fraction(14, 15) *
+    Fraction(9, 10)
+)
+
+# Probability of getting selected in at least one company
+p_selected_at_least_one = 1 - p_not_selected
+
+print(f"{p_selected_at_least_one.numerator}/{p_selected_at_least_one.denominator}")
