@@ -1,0 +1,39 @@
+from collections import defaultdict
+import sys
+
+# Step 1: Train hero strengths
+hero_score = defaultdict(int)
+
+with open("trainingdata.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        parts = line.strip().split(",")
+        team1 = parts[:5]
+        team2 = parts[5:10]
+        winner = int(parts[10])
+
+        if winner == 1:
+            for h in team1:
+                hero_score[h] += 1
+            for h in team2:
+                hero_score[h] -= 1
+        else:
+            for h in team2:
+                hero_score[h] += 1
+            for h in team1:
+                hero_score[h] -= 1
+
+# Step 2: Read input
+K = int(sys.stdin.readline())
+
+for _ in range(K):
+    heroes = sys.stdin.readline().strip().split(",")
+    team1 = heroes[:5]
+    team2 = heroes[5:]
+
+    score1 = sum(hero_score[h] for h in team1)
+    score2 = sum(hero_score[h] for h in team2)
+
+    if score1 >= score2:
+        print(1)
+    else:
+        print(2)
