@@ -1,0 +1,13 @@
+from fractions import Fraction
+
+B  = Fraction(1, 3)
+N = Fraction(1, 5)
+
+not_b = 1 - B
+not_n = 1 - N
+
+case1 = B * not_n
+case2 = N * not_b
+
+result = case1 + case2
+print(f"{result.numerator}/{result.denominator}")
