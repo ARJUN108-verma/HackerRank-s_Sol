@@ -1,0 +1,41 @@
+import sys
+
+def parse_features(parts):
+    feats = {}
+    for p in parts:
+        i, v = p.split(":")
+        feats[int(i)] = float(v)
+    return feats
+
+# Read N, M
+N, M = map(int, sys.stdin.readline().split())
+
+# Skip training data (we don't need it)
+for _ in range(N):
+    sys.stdin.readline()
+
+# Number of queries
+q = int(sys.stdin.readline())
+
+for _ in range(q):
+    row = sys.stdin.readline().split()
+    qid = row[0]
+    feats = parse_features(row[1:])
+
+    # ---- Hand-crafted scoring ----
+    score = 0
+
+    score += 0.000000000001 * feats.get(1, 0)   # dominance
+    score += 1.5 * feats.get(6, 0)
+    score += 1.2 * feats.get(11, 0)
+    score += 0.8 * feats.get(20, 0)
+    score += 0.5 * feats.get(21, 0)
+
+    # Penalties
+    score -= 1.0 * feats.get(9, 0)
+    score -= 1.0 * feats.get(10, 0)
+    score -= 0.8 * feats.get(14, 0)
+
+    # Decision
+    label = "+1" if score > 3.5 else "-1"
+    print(f"{qid} {label}")
