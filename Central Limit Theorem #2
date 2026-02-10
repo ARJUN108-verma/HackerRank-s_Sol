@@ -1,0 +1,20 @@
+import math
+
+# Given values
+mu = 2.4
+sigma = 2.0
+n = 100
+tickets = 250
+
+# Mean and standard deviation of the sum
+mean_sum = n * mu
+std_sum = math.sqrt(n) * sigma
+
+# Z-score
+z = (tickets - mean_sum) / std_sum
+
+# Normal CDF using error function
+probability = 0.5 * (1 + math.erf(z / math.sqrt(2)))
+
+# Output
+print(round(probability, 4))
