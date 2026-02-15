@@ -1,0 +1,9 @@
+from fractions import Fraction
+AD = Fraction(5, 2)
+BD = Fraction(8, 1)
+CD = Fraction(20, 1)
+
+Total = AD + BD + CD
+
+A_def_prob = Fraction(AD, Total)
+print(A_def_prob)
