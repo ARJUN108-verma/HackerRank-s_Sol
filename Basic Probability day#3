@@ -1,0 +1,10 @@
+from fractions import Fraction
+
+Pwx = Fraction(5, 9)
+Pbx = Fraction(4, 9)
+
+Pwyw = Fraction(3, 7)
+Pbyb = Fraction(1, 2)
+
+result = (Pwx * Pwyw) + (Pbx * Pbyb)
+print(result)
