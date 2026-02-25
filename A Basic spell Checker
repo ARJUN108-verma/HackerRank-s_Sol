@@ -1,0 +1,58 @@
+import sys
+import re
+from collections import defaultdict
+
+data = sys.stdin.read().splitlines()
+
+dictionary = defaultdict(int)
+
+# Check if corpus exists
+if "END-OF-CORPUS" in data:
+    idx = data.index("END-OF-CORPUS")
+
+    # Build dictionary
+    for line in data[:idx]:
+        words = re.findall(r"[a-zA-Z'-]+", line.lower())
+        for word in words:
+            dictionary[word] += 1
+
+    remaining = data[idx + 1:]
+else:
+    # No corpus provided
+    remaining = data
+
+
+def generate_candidates(word):
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
+
+    deletes = [L + R[1:] for L, R in splits if R]
+    inserts = [L + c + R for L, R in splits for c in letters]
+    replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
+    transposes = [L + R[1] + R[0] + R[2:]
+                  for L, R in splits if len(R) > 1]
+
+    return set(deletes + inserts + replaces + transposes)
+
+
+def correct_word(word):
+    word = word.lower()
+
+    if word in dictionary:
+        return word
+
+    candidates = generate_candidates(word)
+    valid = [w for w in candidates if w in dictionary]
+
+    if not valid:
+        return word
+
+    valid.sort(key=lambda w: (-dictionary[w], w))
+    return valid[0]
+
+
+# Process test words
+if remaining:
+    n = int(remaining[0])
+    for i in range(1, n + 1):
+        print(correct_word(remaining[i]))
