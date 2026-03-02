@@ -1,0 +1,30 @@
+import sys
+import numpy as np
+
+# Read F (features) and N (number of training examples)
+F, N = map(int, sys.stdin.readline().split())
+
+X = []
+y = []
+
+# Read training data
+for _ in range(N):
+    row = list(map(float, sys.stdin.readline().split()))
+    X.append([1.0] + row[:F])   # Add 1 for intercept
+    y.append(row[F])
+
+X = np.array(X)
+y = np.array(y)
+
+# Compute regression coefficients using Normal Equation
+beta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+
+# Read number of test cases
+T = int(sys.stdin.readline())
+
+# Predict for test data
+for _ in range(T):
+    features = list(map(float, sys.stdin.readline().split()))
+    x_test = np.array([1.0] + features)
+    prediction = x_test.dot(beta)
+    print(round(prediction, 2))
