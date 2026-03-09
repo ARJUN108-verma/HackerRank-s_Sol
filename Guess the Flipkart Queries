@@ -1,0 +1,104 @@
+import sys
+
+def solve():
+    # Define the 20 official search queries
+    queries = [
+        "axe deo", "best-seller books", "calvin klein", "camcorder", "camera",
+        "chemistry", "chromebook", "c programming", "data structures algorithms",
+        "dell laptops", "dslr canon", "mathematics", "nike-deodrant", "physics",
+        "sony cybershot", "spoken english", "timex watch", "titan watch",
+        "tommy watch", "written english"
+    ]
+
+    # Map keywords found in product names to the specific query
+    # Priority matters here; more specific terms should be checked first.
+    keyword_map = {
+        "axe": "axe deo",
+        "canon": "dslr canon",
+        "dell": "dell laptops",
+        "chromebook": "chromebook",
+        "cybershot": "sony cybershot",
+        "sony": "camera", # General Sony cameras if not Cybershot
+        "nike": "nike-deodrant",
+        "calvin klein": "calvin klein",
+        "ck": "calvin klein",
+        "timex": "timex watch",
+        "titan": "titan watch",
+        "tommy": "tommy watch",
+        "camcorder": "camcorder",
+        "handycam": "camcorder",
+        # Book/Education categories
+        "c++": "c programming",
+        "c programming": "c programming",
+        "data structures": "data structures algorithms",
+        "algorithms": "data structures algorithms",
+        "chemistry": "chemistry",
+        "physics": "physics",
+        "mathematics": "mathematics",
+        "maths": "mathematics",
+        "spoken english": "spoken english",
+        "written english": "written english",
+        "paperback": "best-seller books" # Default for books if no subject matches
+    }
+
+    # Read N
+    try:
+        line = sys.stdin.readline()
+        if not line:
+            return
+        n = int(line.strip())
+    except EOFError:
+        return
+
+    for _ in range(n):
+        product_name = sys.stdin.readline().strip().lower()
+        
+        # Remove trailing dots as per instructions
+        product_name = product_name.replace("...", "")
+        
+        assigned_query = "best-seller books" # Default fallback
+        
+        # Check for specific technical/brand matches first
+        if "data structures" in product_name or "algorithms" in product_name:
+            assigned_query = "data structures algorithms"
+        elif "c++" in product_name or "c programming" in product_name or "the ultimate c" in product_name:
+            assigned_query = "c programming"
+        elif "canon" in product_name:
+            assigned_query = "dslr canon"
+        elif "dell" in product_name:
+            assigned_query = "dell laptops"
+        elif "axe" in product_name:
+            assigned_query = "axe deo"
+        elif "nike" in product_name:
+            assigned_query = "nike-deodrant"
+        elif "calvin klein" in product_name or " ck " in product_name:
+            assigned_query = "calvin klein"
+        elif "titan" in product_name:
+            assigned_query = "titan watch"
+        elif "timex" in product_name:
+            assigned_query = "timex watch"
+        elif "tommy" in product_name:
+            assigned_query = "tommy watch"
+        elif "chemistry" in product_name:
+            assigned_query = "chemistry"
+        elif "physics" in product_name:
+            assigned_query = "physics"
+        elif "mathematics" in product_name or "maths" in product_name:
+            assigned_query = "mathematics"
+        elif "spoken english" in product_name:
+            assigned_query = "spoken english"
+        elif "chromebook" in product_name:
+            assigned_query = "chromebook"
+        elif "cybershot" in product_name:
+            assigned_query = "sony cybershot"
+        elif "camcorder" in product_name or "handycam" in product_name:
+            assigned_query = "camcorder"
+        elif "camera" in product_name:
+            assigned_query = "camera"
+        elif "english" in product_name:
+            assigned_query = "written english"
+        
+        print(assigned_query)
+
+if __name__ == "__main__":
+    solve()
