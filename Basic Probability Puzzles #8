@@ -1,0 +1,9 @@
+from fractions import Fraction
+
+p_MN = 1 - Fraction(1, 2)
+p_EN = 1- Fraction(2, 5)
+
+P_MN_and_EN = Fraction(1, 5)
+
+P_MN_or_EN = p_EN + p_MN - P_MN_and_EN
+print(P_MN_or_EN)
