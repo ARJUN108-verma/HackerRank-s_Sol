@@ -1,0 +1,11 @@
+lam_A = 0.88
+lam_B = 1.55
+
+EX2 = lam_A + lam_A * lam_A
+EY2 = lam_B + lam_B * lam_B
+
+CA = 160 + 40 * EX2
+CB = 128 + 40 * EY2
+
+print(round(CA, 3))
+print(round(CB, 3))
