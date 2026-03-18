@@ -1,0 +1,49 @@
+import re
+
+def is_likely_its(next_word):
+    # Words that usually indicate "it's" (it is / it has)
+    its_triggers = {
+        "a", "an", "the", "been", "being", "become", "becomes",
+        "becoming", "is", "was", "were", "am",
+        "time", "going", "done", "made"
+    }
+    
+    # Common adjective endings
+    if next_word.endswith("ing") or next_word.endswith("ed"):
+        return True
+    
+    if next_word in its_triggers:
+        return True
+    
+    return False
+
+def solve():
+    n = int(input())
+    
+    for _ in range(n):
+        sentence = input()
+        words = sentence.split()
+        
+        result = []
+        
+        for i, word in enumerate(words):
+            if "???" in word:
+                # Extract next word (clean punctuation)
+                if i + 1 < len(words):
+                    next_word = re.sub(r'[^\w]', '', words[i + 1].lower())
+                else:
+                    next_word = ""
+                
+                if is_likely_its(next_word):
+                    replacement = "it's"
+                else:
+                    replacement = "its"
+                
+                word = word.replace("???", replacement)
+            
+            result.append(word)
+        
+        print(" ".join(result))
+
+# Run the function
+solve()
