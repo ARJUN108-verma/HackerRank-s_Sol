@@ -1,0 +1,35 @@
+def is_identity(kernel):
+    rows = len(kernel)
+    cols = len(kernel[0])
+    
+    center_i, center_j = rows // 2, cols // 2
+    
+    for i in range(rows):
+        for j in range(cols):
+            if i == center_i and j == center_j:
+                if kernel[i][j] != 1:
+                    return False
+            else:
+                if kernel[i][j] != 0:
+                    return False
+    return True
+
+
+def find_identity_filter(filters):
+    for idx, kernel in enumerate(filters, start=1):
+        if is_identity(kernel):
+            return idx
+    return -1
+
+
+# Given filters
+filters = [
+    [[0,0,0],[0,1,0],[0,0,0]],
+    [[-1,-1,-1],[-1,8,-1],[-1,-1,-1]],
+    [[0,-1,0],[-1,5,-1],[0,-1,0]],
+    [[1/16,1/8,1/16],[1/8,1/4,1/8],[1/16,1/8,1/16]],
+    [[-1,0,1],[-2,0,2],[-1,0,1]],
+    [[-1,-2,-1],[0,0,0],[1,2,1]]
+]
+
+print(find_identity_filter(filters))
