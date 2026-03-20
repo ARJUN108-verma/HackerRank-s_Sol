@@ -1,0 +1,49 @@
+def solve():
+    N = int(input().strip())
+    text = input().strip()
+    
+    words = text.split()
+    answers = []
+    
+    modals = set(["may","might","must","shall","should","will","would","can","could"])
+    helpers = set(["has","have","had"])
+    
+    for i in range(len(words)):
+        if words[i] == "----":
+            prev_word = words[i-1].lower() if i > 0 else ""
+            next_word = words[i+1].lower() if i < len(words)-1 else ""
+            
+            # 1. Modal verbs -> be
+            if prev_word in modals:
+                answers.append("be")
+            
+            # 2. Perfect tense -> been
+            elif prev_word in helpers:
+                answers.append("been")
+            
+            # 3. Continuous tense
+            elif next_word.endswith("ing"):
+                if prev_word in ["he","she","it"]:
+                    answers.append("is")
+                else:
+                    answers.append("are")
+            
+            # 4. Passive (past participle)
+            elif next_word.endswith("ed") or next_word in ["known","taken","conducted","won","founded","introduced"]:
+                if prev_word.endswith("s"):
+                    answers.append("are")
+                else:
+                    answers.append("is")
+            
+            # 5. Plural subject
+            elif prev_word.endswith("s"):
+                answers.append("are")
+            
+            # 6. Default
+            else:
+                answers.append("is")
+    
+    for ans in answers:
+        print(ans)
+
+solve()
