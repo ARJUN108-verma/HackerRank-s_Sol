@@ -1,0 +1,57 @@
+import sys
+import math
+
+# Read input
+r, c, N = map(int, sys.stdin.readline().split())
+R, C = map(int, sys.stdin.readline().split())
+
+# Read downsampled image
+img = []
+for _ in range(r):
+    row = sys.stdin.readline().strip().split()
+    pixels = [list(map(int, p.split(','))) for p in row]
+    img.append(pixels)
+
+# Output image
+result = [[[0, 0, 0] for _ in range(C)] for _ in range(R)]
+
+# Scale factors
+scale_x = (r - 1) / (R - 1) if R > 1 else 0
+scale_y = (c - 1) / (C - 1) if C > 1 else 0
+
+for i in range(R):
+    for j in range(C):
+        # Map to small image coordinates
+        x = i * scale_x
+        y = j * scale_y
+
+        x0 = int(math.floor(x))
+        y0 = int(math.floor(y))
+        x1 = min(x0 + 1, r - 1)
+        y1 = min(y0 + 1, c - 1)
+
+        dx = x - x0
+        dy = y - y0
+
+        for k in range(3):  # B, G, R channels
+            A = img[x0][y0][k]
+            B = img[x1][y0][k]
+            Cc = img[x0][y1][k]
+            D = img[x1][y1][k]
+
+            val = (
+                A * (1 - dx) * (1 - dy) +
+                B * dx * (1 - dy) +
+                Cc * (1 - dx) * dy +
+                D * dx * dy
+            )
+
+            result[i][j][k] = int(round(val))
+
+# Print output
+for i in range(R):
+    row = []
+    for j in range(C):
+        b, g, r_ = result[i][j]
+        row.append(f"{b},{g},{r_}")
+    print(" ".join(row))
