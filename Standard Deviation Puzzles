@@ -1,0 +1,8 @@
+original_std = 10
+multiplier = 2
+
+# New standard deviation
+new_std = abs(multiplier) * original_std
+
+# Output rounded to 1 decimal place
+print(round(new_std, 1))
