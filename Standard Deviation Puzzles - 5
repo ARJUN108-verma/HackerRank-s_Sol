@@ -1,0 +1,10 @@
+mean = 45
+std_dev = 10
+n = 500
+
+# Adding a constant (10) to each value
+# Standard deviation remains unchanged
+new_std_dev = std_dev
+
+# Output rounded to 1 decimal place
+print(round(new_std_dev, 1))
