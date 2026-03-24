@@ -1,0 +1,27 @@
+import math
+
+# Given data
+mean_weekly = 50000
+std_weekly = 10000
+weeks = 11
+initial_supply = 74000
+target_level = 20000
+
+# Z value for P(Z > z) = 0.005
+z = 2.575
+
+# Step 1: Total demand distribution
+mean_total = weeks * mean_weekly
+std_total = math.sqrt(weeks) * std_weekly
+
+# Step 2: Solve equation
+# (54000 + 11x - mean_total) / std_total = z
+
+rhs = z * std_total
+value = rhs + mean_total
+
+# Solve for x
+x = (value - 54000) / weeks
+
+# Output
+print(round(x, 4))
