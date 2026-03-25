@@ -1,0 +1,18 @@
+import math
+
+# Given standard deviations
+sigma_x = 3
+sigma_y = 4
+
+# Variances
+var_x = sigma_x ** 2
+var_y = sigma_y ** 2
+
+# Variance of sum (independent variables)
+var_sum = var_x + var_y
+
+# Standard deviation of sum
+sigma = math.sqrt(var_sum)
+
+# Output (1 decimal place)
+print(round(sigma, 1))
