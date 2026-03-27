@@ -1,0 +1,32 @@
+import math
+
+# Given values
+mean_weekly = 50000
+std_weekly = 10000
+weeks = 11
+
+initial_supply = 74000
+weekly_delivery = 47000
+
+# Total demand over 11 weeks
+mean_total = weeks * mean_weekly
+std_total = math.sqrt(weeks) * std_weekly
+
+# Total supply
+total_supply = initial_supply + weeks * weekly_delivery
+
+# Condition: remaining < 20000 means demand > (total_supply - 20000)
+threshold = total_supply - 20000
+
+# Normal CDF using erf
+def normal_cdf(x):
+    return (1 + math.erf(x / math.sqrt(2))) / 2
+
+# Z-score
+z = (threshold - mean_total) / std_total
+
+# Probability
+probability = 1 - normal_cdf(z)
+
+# Output
+print(round(probability, 4))
