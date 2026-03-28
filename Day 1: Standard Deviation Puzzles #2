@@ -1,0 +1,9 @@
+mean = 0.675
+std_dev = 0.065
+height = 90.25
+
+height_m = height / 100
+
+z_score = (height_m - mean) / std_dev
+
+print(round(z_score, 2))
