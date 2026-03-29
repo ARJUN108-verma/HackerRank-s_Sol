@@ -1,0 +1,51 @@
+import sys
+
+def solve():
+    # Context keywords for 'animal'
+    animal_keywords = {
+        'genome', 'sequenced', 'tail', 'species', 'rodent', 'biology', 
+        'wild', 'nest', 'fur', 'breed', 'laboratory', 'cheese', 'predator',
+        'habitat', 'mammal', 'nature', 'trap', 'pest', 'muscle', 'brain'
+    }
+    
+    # Context keywords for 'computer-mouse'
+    computer_keywords = {
+        'input', 'device', 'click', 'button', 'scroll', 'optical', 
+        'usb', 'wireless', 'cursor', 'pointer', 'desktop', 'computer',
+        'hardware', 'bluetooth', 'dpi', 'pad', 'laser', 'port', 'interface'
+    }
+
+    # Reading input
+    input_data = sys.stdin.read().splitlines()
+    if not input_data:
+        return
+    
+    try:
+        n = int(input_data[0].strip())
+    except ValueError:
+        return
+
+    sentences = input_data[1:n+1]
+
+    for sentence in sentences:
+        # Normalize sentence: lowercase and remove basic punctuation
+        words = sentence.lower().replace('.', '').replace(',', '').split()
+        
+        animal_score = 0
+        computer_score = 0
+        
+        for word in words:
+            if word in animal_keywords:
+                animal_score += 1
+            if word in computer_keywords:
+                computer_score += 1
+        
+        # Output based on which score is higher
+        # Defaulting to 'animal' if tied, as it's common in scientific contexts
+        if computer_score > animal_score:
+            print("computer-mouse")
+        else:
+            print("animal")
+
+if __name__ == "__main__":
+    solve()
