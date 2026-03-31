@@ -1,0 +1,23 @@
+import math
+
+#data 
+mu = 500
+sd = 80
+n = 100
+
+#sample error = 
+se = sd/math.sqrt(n)
+
+#z score 
+z1 = (490 - mu) / se
+z2 = (510 - mu) / se
+
+# Standard Normal CDF using erf
+def normal_cdf(z):
+    return 0.5 * (1 + math.erf(z / math.sqrt(2)))
+
+# Probability
+probability = normal_cdf(z2) - normal_cdf(z1)
+
+# Output rounded to 4 decimal places
+print(f"{probability:.4f}")
