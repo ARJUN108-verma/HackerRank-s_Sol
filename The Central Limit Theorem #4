@@ -1,0 +1,14 @@
+import math
+
+mu = 500
+sigma = 80
+n = 100
+
+SE = sigma / math.sqrt(n)
+margin = 1.96 * SE
+
+A = round(mu - margin, 2)
+B = round(mu + margin, 2)
+
+print("{:.2f}".format(A))
+print("{:.2f}".format(B))
