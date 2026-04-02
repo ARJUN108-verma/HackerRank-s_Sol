@@ -1,0 +1,16 @@
+import math
+from fractions import Fraction
+
+# Total number of people
+n = 10
+
+# Total circular arrangements
+total = math.factorial(n - 1)
+
+# Favorable arrangements (pair treated as one unit)
+favorable = 2 * math.factorial(n - 2)
+
+# Probability as a reduced fraction
+probability = Fraction(favorable, total)
+
+print(f"{probability.numerator}/{probability.denominator}")
