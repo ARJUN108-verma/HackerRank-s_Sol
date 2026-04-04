@@ -1,0 +1,5 @@
+def detect_vertical_edge_filter():
+    # Sobel X kernel detects vertical edges
+    return 5
+
+print(detect_vertical_edge_filter())
