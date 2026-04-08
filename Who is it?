@@ -1,0 +1,42 @@
+import re
+
+def resolve_pronouns():
+    n = int(input())
+    text = ""
+    
+    for _ in range(n):
+        text += input() + " "
+    
+    entities = input().split(';')
+    
+    # Find pronouns with positions
+    pronouns = [(m.group(1), m.start()) for m in re.finditer(r'\*\*(.*?)\*\*', text)]
+    
+    # Store positions of entities
+    entity_positions = []
+    for entity in entities:
+        for match in re.finditer(re.escape(entity), text):
+            entity_positions.append((entity, match.start()))
+    
+    results = []
+    
+    for pronoun, pos in pronouns:
+        best_entity = None
+        best_distance = float('inf')
+        
+        for entity, e_pos in entity_positions:
+            if e_pos < pos:  # must appear before pronoun
+                distance = pos - e_pos
+                
+                # Basic rule: nearest previous entity
+                if distance < best_distance:
+                    best_distance = distance
+                    best_entity = entity
+        
+        results.append(best_entity)
+    
+    for r in results:
+        print(r)
+
+# Run function
+resolve_pronouns()
