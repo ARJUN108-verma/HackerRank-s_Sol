@@ -1,0 +1,53 @@
+def erosion(B, n, m):
+    eroded = [[0]*m for _ in range(n)]
+    
+    for i in range(1, n-1):
+        for j in range(1, m-1):
+            flag = True
+            for x in range(-1, 2):
+                for y in range(-1, 2):
+                    if B[i+x][j+y] == 0:
+                        flag = False
+                        break
+                if not flag:
+                    break
+            if flag:
+                eroded[i][j] = 1
+    return eroded
+
+
+def dilation(B, n, m):
+    dilated = [[0]*m for _ in range(n)]
+    
+    for i in range(1, n-1):
+        for j in range(1, m-1):
+            if B[i][j] == 1:
+                for x in range(-1, 2):
+                    for y in range(-1, 2):
+                        dilated[i+x][j+y] = 1
+    return dilated
+
+
+# Input image
+B = [
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0],
+    [0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0]
+]
+
+n = len(B)
+m = len(B[0])
+
+# Opening = erosion followed by dilation
+eroded = erosion(B, n, m)
+opened = dilation(eroded, n, m)
+
+# Count number of 1s
+result = sum(sum(row) for row in opened)
+print(result)
