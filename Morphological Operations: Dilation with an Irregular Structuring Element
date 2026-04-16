@@ -1,0 +1,39 @@
+def dilate(image, struct_elem, origin):
+    m = len(image)
+    n = len(image[0])
+    sm = len(struct_elem)
+    sn = len(struct_elem[0])
+    
+    result = [[0 for _ in range(n)] for _ in range(m)]
+    
+    for i in range(m):
+        for j in range(n):
+            if image[i][j] == 1:
+                for si in range(sm):
+                    for sj in range(sn):
+                        if struct_elem[si][sj] == 1:
+                            ni = i + (si - origin[0])
+                            nj = j + (sj - origin[1])
+                            
+                            if 0 <= ni < m and 0 <= nj < n:
+                                result[ni][nj] = 1
+    return result
+
+
+image = [
+    [0,0,0,0],
+    [0,1,1,0],
+    [0,0,0,0]
+]
+
+struct_elem = [
+    [1,0],
+    [1,1]
+]
+
+origin = (1, 0)
+
+output = dilate(image, struct_elem, origin)
+
+for row in output:
+    print("".join(map(str, row)))
