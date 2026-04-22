@@ -1,0 +1,32 @@
+import sys
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+def main():
+    data = sys.stdin.read().strip().split('\n')
+    
+    n = int(data[0])
+    
+    setA = data[1:n+1]
+    setB = data[n+2:n+2+n]  # skip separator *****
+    
+    # Combine all text for consistent TF-IDF vocabulary
+    corpus = setA + setB
+    
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(corpus)
+    
+    # Split vectors
+    tfidf_A = tfidf_matrix[:n]
+    tfidf_B = tfidf_matrix[n:]
+    
+    # Compute similarity matrix
+    similarity = cosine_similarity(tfidf_B, tfidf_A)
+    
+    # For each description (row in B), find best matching title (column in A)
+    for i in range(n):
+        best_match = similarity[i].argmax()
+        print(best_match + 1)  # +1 for 1-based indexing
+
+if __name__ == "__main__":
+    main()
