@@ -1,0 +1,32 @@
+from fractions import Fraction
+
+# Bag 1: 4 Red, 5 Black (Total 9)
+b1_red = 4
+b1_black = 5
+b1_total = b1_red + b1_black
+
+# Bag 2: 3 Red, 7 Black (Total 10)
+b2_red = 3
+b2_black = 7
+b2_total = b2_red + b2_black
+
+# Combinations helper function
+def combinations(n, r):
+    import math
+    if r > n: return 0
+    return math.comb(n, r)
+
+# Scenario 1: Red from Bag 1, 2 Black from Bag 2
+# Prob = (4/9) * (7C2 / 10C2)
+p_scenario_1 = Fraction(b1_red, b1_total) * \
+               Fraction(combinations(b2_black, 2), combinations(b2_total, 2))
+
+# Scenario 2: Black from Bag 1, 1 Red and 1 Black from Bag 2
+# Prob = (5/9) * ( (3C1 * 7C1) / 10C2 )
+p_scenario_2 = Fraction(b1_black, b1_total) * \
+               Fraction(combinations(b2_red, 1) * combinations(b2_black, 1), combinations(b2_total, 2))
+
+# Final Probability
+final_probability = p_scenario_1 + p_scenario_2
+
+print(f"{final_probability.numerator}/{final_probability.denominator}")
