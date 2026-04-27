@@ -1,0 +1,60 @@
+def dilation(grid, n, m):
+    result = [[0]*m for _ in range(n)]
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                for dx in [-1, 0, 1]:
+                    for dy in [-1, 0, 1]:
+                        ni, nj = i + dx, j + dy
+                        if 0 <= ni < n and 0 <= nj < m:
+                            result[ni][nj] = 1
+    return result
+
+
+def erosion(grid, n, m):
+    result = [[0]*m for _ in range(n)]
+    
+    for i in range(n):
+        for j in range(m):
+            all_one = True
+            for dx in [-1, 0, 1]:
+                for dy in [-1, 0, 1]:
+                    ni, nj = i + dx, j + dy
+                    if not (0 <= ni < n and 0 <= nj < m and grid[ni][nj] == 1):
+                        all_one = False
+                        break
+                if not all_one:
+                    break
+            if all_one:
+                result[i][j] = 1
+    return result
+
+
+def solve():
+    B = [
+        "0000000000",
+        "0111111100",
+        "0000111100",
+        "0000111100",
+        "0001111100",
+        "0000111100",
+        "0001100000",
+        "0000000000",
+        "0000000000"
+    ]
+    
+    n, m = len(B), len(B[0])
+    grid = [[int(c) for c in row] for row in B]
+    
+    # Closing = dilation followed by erosion
+    dilated = dilation(grid, n, m)
+    closed = erosion(dilated, n, m)
+    
+    # Count 1s
+    count = sum(sum(row) for row in closed)
+    print(count)
+
+
+if __name__ == "__main__":
+    solve()
