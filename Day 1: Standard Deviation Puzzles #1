@@ -1,0 +1,4 @@
+import math
+
+N = 2 + (2 * math.sqrt(2)) / 3
+print(f"{N:.2f}")
