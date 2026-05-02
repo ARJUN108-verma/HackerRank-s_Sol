@@ -1,0 +1,9 @@
+from fractions import Fraction
+
+p1 = Fraction(3,7) * Fraction(5,9) * Fraction(4,8)
+p2 = Fraction(4,9) * Fraction(4,7) * Fraction(4,8)
+p3 = Fraction(4,8) * Fraction(4,7) * Fraction(5,9)
+
+result = p1 + p2 + p3
+
+print(str(result.numerator) + "/" + str(result.denominator))
