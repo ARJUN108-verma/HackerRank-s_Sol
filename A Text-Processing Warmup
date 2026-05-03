@@ -1,0 +1,37 @@
+import re
+
+T = int(input().strip())
+
+# Article regex
+article_a = re.compile(r'\ba\b', re.IGNORECASE)
+article_an = re.compile(r'\ban\b', re.IGNORECASE)
+article_the = re.compile(r'\bthe\b', re.IGNORECASE)
+
+# Month names
+months = r'(Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December)'
+
+# Date patterns
+date_patterns = [
+    r'\b\d{1,2}/\d{1,2}/\d{2,4}\b',
+    rf'\b\d{{1,2}}(st|nd|rd|th)?\s+{months},?\s+\d{{2,4}}\b',
+    rf'\b{months}\s+\d{{1,2}}(st|nd|rd|th)?,?\s+\d{{2,4}}\b',
+    rf'\b\d{{1,2}}(st|nd|rd|th)?\s+of\s+{months},?\s+\d{{2,4}}\b'
+]
+
+date_regex = re.compile('|'.join(date_patterns), re.IGNORECASE)
+
+for _ in range(T):
+    text = input().strip()
+
+    # Count articles
+    count_a = len(article_a.findall(text))
+    count_an = len(article_an.findall(text))
+    count_the = len(article_the.findall(text))
+
+    # Count dates
+    count_dates = len(date_regex.findall(text))
+
+    print(count_a)
+    print(count_an)
+    print(count_the)
+    print(count_dates)
