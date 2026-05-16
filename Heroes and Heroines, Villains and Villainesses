@@ -1,0 +1,56 @@
+import re
+from collections import defaultdict
+
+# Gender indicator words
+male_words = {
+    "he", "him", "his", "mr", "sir", "man", "boy", "gentleman",
+    "father", "brother", "husband", "son"
+}
+
+female_words = {
+    "she", "her", "hers", "mrs", "miss", "madam", "woman", "girl",
+    "mother", "sister", "wife", "daughter"
+}
+
+
+def detect_gender(corpus, name):
+
+    male_score = 0
+    female_score = 0
+
+    # Find all occurrences of the name
+    pattern = r'\b' + re.escape(name) + r'\b'
+
+    for match in re.finditer(pattern, corpus):
+
+        start = max(0, match.start() - 120)
+        end = min(len(corpus), match.end() + 120)
+
+        context = corpus[start:end].lower()
+
+        words = re.findall(r"[a-z']+", context)
+
+        for w in words:
+            if w in male_words:
+                male_score += 1
+            elif w in female_words:
+                female_score += 1
+
+    if male_score >= female_score:
+        return "Male"
+    else:
+        return "Female"
+
+
+# Read corpus
+with open("corpus.txt", "r", encoding="utf-8", errors="ignore") as f:
+    corpus = f.read()
+
+# Input
+n = int(input())
+
+names = [input().strip() for _ in range(n)]
+
+# Output
+for name in names:
+    print(detect_gender(corpus, name))
