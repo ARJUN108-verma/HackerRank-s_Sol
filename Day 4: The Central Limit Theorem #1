@@ -1,0 +1,21 @@
+import math
+
+# Given values
+x = 9800
+n = 49
+mu = 205
+sigma = 15
+
+# Mean and standard deviation
+mean = n * mu
+std = math.sqrt(n) * sigma
+
+# Standard normal CDF
+def normal_distribution(x, mean, std):
+    return 0.5 * (1 + math.erf((x - mean) / (std * math.sqrt(2))))
+
+# Probability
+result = normal_distribution(x, mean, std)
+
+# Correct output format
+print(f"{result:.4f}")
