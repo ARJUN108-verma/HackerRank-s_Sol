@@ -1,0 +1,57 @@
+import sys
+
+n = int(input())
+
+prices = []
+missing = {}
+
+for i in range(n):
+    line = input().split()
+
+    value = line[-1]
+
+    if value.startswith("Missing"):
+        prices.append(None)
+        missing[value] = i
+    else:
+        prices.append(float(value))
+
+# Fill missing values using interpolation
+predicted = {}
+
+for key in sorted(missing.keys(), key=lambda x: int(x.split('_')[1])):
+
+    idx = missing[key]
+
+    # Find left known value
+    left = idx - 1
+    while left >= 0 and prices[left] is None:
+        left -= 1
+
+    # Find right known value
+    right = idx + 1
+    while right < n and prices[right] is None:
+        right += 1
+
+    # Interpolate
+    if left >= 0 and right < n:
+        left_val = prices[left]
+        right_val = prices[right]
+
+        gap = right - left
+        dist = idx - left
+
+        value = left_val + (right_val - left_val) * dist / gap
+
+    elif left >= 0:
+        value = prices[left]
+
+    else:
+        value = prices[right]
+
+    prices[idx] = value
+    predicted[key] = value
+
+# Output in order
+for i in range(1, 21):
+    print(predicted[f"Missing_{i}"])
