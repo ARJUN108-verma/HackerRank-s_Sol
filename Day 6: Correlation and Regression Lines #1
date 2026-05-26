@@ -1,0 +1,8 @@
+import math
+
+b_yx = -3/4
+b_xy = -3/4
+
+r = -math.sqrt(b_yx * b_xy)
+
+print(f"{r:.2f}")
