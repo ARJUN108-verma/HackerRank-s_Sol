@@ -1,0 +1,69 @@
+import re
+from collections import defaultdict
+
+# Build dictionary from corpus
+freq = defaultdict(int)
+
+with open('corpus.txt', 'r', encoding='utf-8') as f:
+    for line in f:
+        line = line.strip()
+        if line == "END-OF-CORPUS":
+            break
+
+        words = re.findall(r"[a-zA-Z]+(?:[-'][a-zA-Z]+)*", line.lower())
+
+        for word in words:
+            freq[word] += 1
+
+letters = "abcdefghijklmnopqrstuvwxyz"
+
+def generate_candidates(word):
+    candidates = set()
+    n = len(word)
+
+    # Deletion
+    for i in range(n):
+        candidates.add(word[:i] + word[i + 1:])
+
+    # Insertion
+    for i in range(n + 1):
+        for ch in letters:
+            candidates.add(word[:i] + ch + word[i:])
+
+    # Replacement
+    for i in range(n):
+        for ch in letters:
+            if ch != word[i]:
+                candidates.add(word[:i] + ch + word[i + 1:])
+
+    # Transposition
+    for i in range(n - 1):
+        candidates.add(
+            word[:i] +
+            word[i + 1] +
+            word[i] +
+            word[i + 2:]
+        )
+
+    return candidates
+
+n = int(input())
+
+for _ in range(n):
+    word = input().strip().lower()
+
+    if word in freq:
+        print(word)
+        continue
+
+    valid = []
+
+    for candidate in generate_candidates(word):
+        if candidate in freq:
+            valid.append(candidate)
+
+    if not valid:
+        print(word)
+    else:
+        valid.sort(key=lambda w: (-freq[w], w))
+        print(valid[0])
