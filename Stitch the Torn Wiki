@@ -1,0 +1,50 @@
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+import sys
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+lines = [line.rstrip('\n') for line in sys.stdin]
+
+n = int(lines[0])
+
+sep = lines.index("*****")
+
+A = lines[1:sep]
+B = lines[sep + 1:]
+
+# Build TF-IDF vectors
+all_docs = A + B
+
+vectorizer = TfidfVectorizer(
+    stop_words='english',
+    lowercase=True,
+    ngram_range=(1, 2)
+)
+
+X = vectorizer.fit_transform(all_docs)
+
+A_vec = X[:n]
+B_vec = X[n:]
+
+# Similarity matrix
+sim = cosine_similarity(A_vec, B_vec)
+
+# Greedy maximum matching
+used = set()
+answer = [-1] * n
+
+pairs = []
+
+for i in range(n):
+    for j in range(n):
+        pairs.append((sim[i][j], i, j))
+
+pairs.sort(reverse=True)
+
+for score, i, j in pairs:
+    if answer[i] == -1 and j not in used:
+        answer[i] = j + 1  # 1-based indexing
+        used.add(j)
+
+for x in answer:
+    print(x)
