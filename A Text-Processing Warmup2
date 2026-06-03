@@ -1,0 +1,30 @@
+import re
+
+T = int(input())
+
+months = r'(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)'
+
+date_patterns = [
+    r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b',
+    rf'\b\d{{1,2}}(?:st|nd|rd|th)?\s+{months}\s+\d{{2,4}}\b',
+    rf'\b\d{{1,2}}(?:st|nd|rd|th)?\s+of\s+{months},?\s+\d{{2,4}}\b',
+    rf'\b{months}\s+\d{{1,2}}(?:st|nd|rd|th)?[,]?\s+\d{{2,4}}\b'
+]
+
+for _ in range(T):
+    text = input().strip()
+
+    count_a = len(re.findall(r'\ba\b', text, re.I))
+    count_an = len(re.findall(r'\ban\b', text, re.I))
+    count_the = len(re.findall(r'\bthe\b', text, re.I))
+
+    matches = set()
+
+    for pattern in date_patterns:
+        for m in re.finditer(pattern, text, re.I):
+            matches.add(m.span())
+
+    print(count_a)
+    print(count_an)
+    print(count_the)
+    print(len(matches))
