@@ -1,0 +1,43 @@
+from collections import defaultdict
+
+n = int(input())
+input()  # header
+
+month_id = {
+    "January":1, "February":2, "March":3, "April":4,
+    "May":5, "June":6, "July":7, "August":8,
+    "September":9, "October":10, "November":11, "December":12
+}
+
+rows = []
+missing = []
+
+tmax_month = defaultdict(list)
+tmin_month = defaultdict(list)
+
+for i in range(n):
+    year, month, tmax, tmin = input().split()
+    m = month_id[month]
+
+    rows.append([year, m, tmax, tmin])
+
+    if "Missing" not in tmax:
+        tmax_month[m].append(float(tmax))
+    else:
+        missing.append((i, 2))
+
+    if "Missing" not in tmin:
+        tmin_month[m].append(float(tmin))
+    else:
+        missing.append((i, 3))
+
+for idx, col in missing:
+    m = rows[idx][1]
+
+    if col == 2:
+        vals = tmax_month[m]
+    else:
+        vals = tmin_month[m]
+
+    prediction = sum(vals) / len(vals)
+    print(prediction)
