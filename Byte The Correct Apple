@@ -1,0 +1,44 @@
+import re
+import math
+from collections import Counter
+
+def tokenize(text):
+    return re.findall(r"[a-z]+", text.lower())
+
+# Read training files
+with open("apple-computers.txt", "r") as f:
+    comp_text = f.read()
+
+with open("apple-fruit.txt", "r") as f:
+    fruit_text = f.read()
+
+comp_vec = Counter(tokenize(comp_text))
+fruit_vec = Counter(tokenize(fruit_text))
+
+def cosine_similarity(doc, ref):
+    dot = 0
+    for word, cnt in doc.items():
+        dot += cnt * ref.get(word, 0)
+
+    norm_doc = math.sqrt(sum(v * v for v in doc.values()))
+    norm_ref = math.sqrt(sum(v * v for v in ref.values()))
+
+    if norm_doc == 0 or norm_ref == 0:
+        return 0
+
+    return dot / (norm_doc * norm_ref)
+
+n = int(input())
+
+for _ in range(n):
+    text = input()
+
+    test_vec = Counter(tokenize(text))
+
+    comp_score = cosine_similarity(test_vec, comp_vec)
+    fruit_score = cosine_similarity(test_vec, fruit_vec)
+
+    if comp_score > fruit_score:
+        print("computer-company")
+    else:
+        print("fruit")
