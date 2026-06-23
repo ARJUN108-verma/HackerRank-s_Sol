@@ -1,0 +1,66 @@
+import re
+from functools import lru_cache
+
+# Load dictionary
+with open("words.txt", "r") as f:
+    WORDS = set(word.strip().lower() for word in f if word.strip())
+
+number_pattern = re.compile(r'^\d+(?:\.\d+)?$')
+
+
+def clean_input(s):
+    s = s.strip().lower()
+
+    if s.startswith("#"):
+        return s[1:]
+
+    if s.startswith("www."):
+        s = s[4:]
+
+    # remove extension(s)
+    parts = s.split(".")
+    if len(parts) > 1:
+        s = parts[0]
+
+    return s
+
+
+def segment(text):
+
+    n = len(text)
+
+    @lru_cache(None)
+    def dfs(i):
+        if i == n:
+            return []
+
+        # Longest token first
+        for j in range(n, i, -1):
+            token = text[i:j]
+
+            if token in WORDS or number_pattern.match(token):
+                rest = dfs(j)
+                if rest is not None:
+                    return [token] + rest
+
+        return None
+
+    result = dfs(0)
+
+    if result is None:
+        return text
+
+    return " ".join(result)
+
+
+def main():
+    t = int(input().strip())
+
+    for _ in range(t):
+        s = input().strip()
+        cleaned = clean_input(s)
+        print(segment(cleaned))
+
+
+if __name__ == "__main__":
+    main()
