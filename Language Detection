@@ -1,0 +1,197 @@
+import sys
+import re
+from collections import Counter
+
+class LanguageDetector:
+    def __init__(self):
+        # Common words for each language (expanded)
+        self.common_words = {
+            'English': {
+                'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
+                'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+                'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her',
+                'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there',
+                'their', 'what', 'so', 'up', 'out', 'if', 'about', 'who', 'get',
+                'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time',
+                'no', 'just', 'him', 'know', 'take', 'people', 'into', 'year',
+                'your', 'good', 'some', 'could', 'them', 'see', 'other', 'than',
+                'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think',
+                'also', 'back', 'after', 'use', 'two', 'how', 'our', 'work',
+                'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any',
+                'these', 'give', 'day', 'most', 'us'
+            },
+            'French': {
+                'le', 'la', 'les', 'des', 'pour', 'que', 'est', 'une', 'dans',
+                'pas', 'plus', 'qui', 'sur', 'avec', 'par', 'tout', 'sont',
+                'fait', 'comme', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son',
+                'sa', 'ses', 'notre', 'vos', 'leur', 'etre', 'avoir', 'faire',
+                'dire', 'voir', 'venir', 'aller', 'payer', 'pouvoir', 'vouloir',
+                'devoir', 'savoir', 'connaitre', 'donner', 'prendre', 'mettre',
+                'rendre', 'tenir', 'suivre', 'vivre', 'mourir', 'parler',
+                'ecouter', 'regarder', 'comprendre', 'et', 'ou', 'mais', 'donc',
+                'or', 'ni', 'car', 'en', 'y', 'ce', 'cet', 'cette', 'ces',
+                'un', 'une', 'du', 'au', 'aux', 'dans', 'par', 'pour', 'sans',
+                'sur', 'entre', 'avec', 'chez', 'contre', 'apres', 'avant',
+                'pendant', 'depuis', 'jusque', 'parmi'
+            },
+            'German': {
+                'der', 'die', 'und', 'den', 'das', 'mit', 'ist', 'ich', 'auf',
+                'sich', 'von', 'nicht', 'ein', 'eine', 'dem', 'des', 'im',
+                'oder', 'wie', 'wird', 'dass', 'auch', 'durch', 'fur', 'uber',
+                'aus', 'bei', 'nach', 'von', 'zu', 'man', 'sein', 'werden',
+                'haben', 'konnen', 'mogen', 'wollen', 'sollen', 'durfen',
+                'mussen', 'lassen', 'gehen', 'kommen', 'sehen', 'sagen',
+                'geben', 'nehmen', 'finden', 'halten', 'bringen', 'fahren',
+                'gehen', 'stehen', 'liegen', 'sitzen', 'wohnen', 'arbeiten',
+                'studieren', 'leben', 'sterben', 'essen', 'trinken', 'spielen',
+                'schreiben', 'lesen', 'sprechen', 'horen', 'sehen', 'fuhlen',
+                'denken', 'glauben', 'wissen', 'kennen', 'verstehen'
+            },
+            'Spanish': {
+                'el', 'la', 'los', 'las', 'con', 'sin', 'por', 'que', 'para',
+                'una', 'como', 'mas', 'pero', 'sus', 'sobre', 'todo', 'este',
+                'esta', 'entre', 'donde', 'cuando', 'nino', 'nina', 'casa',
+                'trabajo', 'tiempo', 'ano', 'dia', 'hombre', 'mujer', 'vida',
+                'mundo', 'tierra', 'agua', 'fuego', 'aire', 'amor', 'paz',
+                'guerra', 'ley', 'derecho', 'familia', 'padre', 'madre',
+                'hermano', 'hermana', 'hijo', 'hija', 'amigo', 'amiga',
+                'profesor', 'estudiante', 'escuela', 'universidad', 'ciudad',
+                'pueblo', 'pais', 'nacion', 'gobierno', 'presidente', 'rey',
+                'reina', 'principe', 'princesa', 'tener', 'hacer', 'poder',
+                'decir', 'ver', 'venir', 'ir', 'ser', 'estar', 'haber',
+                'comer', 'beber', 'dormir', 'vivir', 'morir', 'amar', 'odiar',
+                'caminar', 'correr', 'saltar', 'volar', 'nadar'
+            }
+        }
+        
+        # Character n-grams for each language
+        self.ngrams = {}
+        for lang in self.common_words:
+            self.ngrams[lang] = self._build_ngram_profile(lang)
+    
+    def _build_ngram_profile(self, lang):
+        """Build n-gram profiles from common words"""
+        bigrams = set()
+        trigrams = set()
+        words = list(self.common_words[lang])
+        
+        for word in words:
+            # Bigrams
+            for i in range(len(word) - 1):
+                bigrams.add(word[i:i+2])
+            # Trigrams
+            for i in range(len(word) - 2):
+                trigrams.add(word[i:i+3])
+        
+        # Add some language-specific common n-grams
+        if lang == 'English':
+            bigrams.update(['th', 'he', 'in', 'en', 'nt', 're', 'er', 'an'])
+            trigrams.update(['the', 'ing', 'and', 'ion', 'ent', 'for'])
+        elif lang == 'French':
+            bigrams.update(['es', 'en', 'le', 'de', 're', 'nt', 'on'])
+            trigrams.update(['ent', 'que', 'les', 'des', 'res'])
+        elif lang == 'German':
+            bigrams.update(['en', 'er', 'ch', 'de', 'ge', 'te'])
+            trigrams.update(['und', 'ich', 'der', 'die', 'das'])
+        elif lang == 'Spanish':
+            bigrams.update(['es', 'en', 'el', 'la', 'er', 'lo', 'os'])
+            trigrams.update(['que', 'del', 'los', 'por', 'las'])
+        
+        return {'bigrams': bigrams, 'trigrams': trigrams}
+    
+    def clean_text(self, text):
+        # Remove everything except letters and spaces
+        text = re.sub(r'[^a-zA-Z\s]', ' ', text)
+        text = re.sub(r'\s+', ' ', text)
+        return text.lower().strip()
+    
+    def get_ngrams(self, text, n):
+        words = text.split()
+        all_ngrams = []
+        for word in words:
+            for i in range(len(word) - n + 1):
+                all_ngrams.append(word[i:i+n])
+        return all_ngrams
+    
+    def detect_language(self, text):
+        cleaned = self.clean_text(text)
+        if not cleaned or len(cleaned) < 3:
+            return "English"
+        
+        words = set(cleaned.split())
+        all_text = ''.join(cleaned.split())
+        
+        # Get n-grams from the text
+        text_bigrams = set(self.get_ngrams(cleaned, 2))
+        text_trigrams = set(self.get_ngrams(cleaned, 3))
+        
+        scores = {lang: 0 for lang in self.common_words}
+        
+        # Score based on common words
+        for lang in scores:
+            common = self.common_words[lang]
+            match_count = len(words.intersection(common))
+            scores[lang] += match_count * 10
+        
+        # Score based on character n-grams
+        for lang in scores:
+            profile = self.ngrams[lang]
+            
+            bigram_match = len(text_bigrams.intersection(profile['bigrams']))
+            trigram_match = len(text_trigrams.intersection(profile['trigrams']))
+            
+            scores[lang] += bigram_match * 2
+            scores[lang] += trigram_match * 3
+        
+        # Get the language with highest score
+        best_lang = max(scores, key=scores.get)
+        max_score = scores[best_lang]
+        
+        # If all scores are 0, try alternative detection
+        if max_score == 0:
+            return self._fallback_detection(cleaned)
+        
+        return best_lang
+    
+    def _fallback_detection(self, text):
+        """Fallback method using character frequency analysis"""
+        # Character frequency patterns
+        char_patterns = {
+            'English': 'etaoinshrdlcumwfgypbvkjxqz',
+            'French': 'esaitnrulodcpmvqfbghjxzkyw',
+            'German': 'enisratudhgcblmofwvzpjyxqk',
+            'Spanish': 'eaosrnidlctupmvbgyhqjzxkfw'
+        }
+        
+        # Get character frequencies
+        char_freq = Counter(text.replace(' ', ''))
+        if not char_freq:
+            return "English"
+        
+        # Get top 10 characters
+        top_chars = [char for char, _ in char_freq.most_common(10)]
+        
+        scores = {}
+        for lang, pattern in char_patterns.items():
+            score = 0
+            top_pattern = pattern[:10]
+            for i, char in enumerate(top_chars):
+                if char in top_pattern:
+                    score += 10 - i
+            scores[lang] = score
+        
+        return max(scores, key=scores.get)
+
+def main():
+    text = sys.stdin.read().strip()
+    
+    if not text:
+        print("English")
+        return
+    
+    detector = LanguageDetector()
+    result = detector.detect_language(text)
+    print(result)
+
+if __name__ == "__main__":
+    main()
