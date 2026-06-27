@@ -1,0 +1,75 @@
+import re
+from collections import defaultdict
+
+# ---------------- T9 Mapping ---------------- #
+
+T9 = {
+    'a': '2', 'b': '2', 'c': '2',
+    'd': '3', 'e': '3', 'f': '3',
+    'g': '4', 'h': '4', 'i': '4',
+    'j': '5', 'k': '5', 'l': '5',
+    'm': '6', 'n': '6', 'o': '6',
+    'p': '7', 'q': '7', 'r': '7', 's': '7',
+    't': '8', 'u': '8', 'v': '8',
+    'w': '9', 'x': '9', 'y': '9', 'z': '9'
+}
+
+# ---------------- Read Dictionary ---------------- #
+
+freq = {}
+
+with open("t9Dictionary", "r") as f:
+    n = int(f.readline())
+    for _ in range(n):
+        word = f.readline().strip().lower()
+        freq[word] = 1     # dictionary contributes one count
+
+# ---------------- Read Corpus ---------------- #
+
+# Words may contain apostrophes and hyphens
+pattern = re.compile(r"[A-Za-z](?:[A-Za-z'-]*[A-Za-z])?")
+
+with open("t9TextCorpus", "r") as f:
+    for line in f:
+        if line.strip() == "END-OF-CORPUS":
+            break
+
+        words = pattern.findall(line)
+
+        for w in words:
+            w = w.lower()
+            if w in freq:
+                freq[w] += 1
+
+# ---------------- Build Prefix Index ---------------- #
+
+prefix_map = defaultdict(list)
+
+for word in freq:
+
+    digits = []
+
+    for ch in word:
+        if ch in T9:              # ignore ' and -
+            digits.append(T9[ch])
+
+    digits = "".join(digits)
+
+    for i in range(1, len(digits) + 1):
+        prefix_map[digits[:i]].append(word)
+
+# Sort candidates once
+for key in prefix_map:
+    prefix_map[key].sort(key=lambda x: (-freq[x], x))
+
+# ---------------- Queries ---------------- #
+
+T = int(input())
+
+for _ in range(T):
+    seq = input().strip()
+
+    if seq not in prefix_map:
+        print("No Suggestions")
+    else:
+        print(";".join(prefix_map[seq][:5]))
