@@ -1,0 +1,57 @@
+import re
+
+n = int(input())
+
+mapping = {}
+
+for _ in range(n):
+    text = input().strip()
+
+    # Pattern 1: Expansion (ACRONYM)
+    for m in re.finditer(r'([A-Z][A-Za-z\'&\-]*(?:\s+[A-Za-z][A-Za-z\'&\-]*){0,15})\s*\(([A-Z0-9&\-]{2,})\)', text):
+        expansion = m.group(1).strip()
+        acronym = m.group(2).strip()
+        expansion = re.sub(r'^(The|A|An)\s+', '', expansion, flags=re.I)
+        mapping[acronym] = expansion
+
+    # Pattern 2 & 3: Find standalone acronyms
+    tokens = re.findall(r"[A-Za-z']+|[A-Z]{2,}", text)
+
+    for i, token in enumerate(tokens):
+        if re.fullmatch(r'[A-Z]{2,}', token):
+            if token not in mapping:
+                start = max(0, i - 15)
+                phrase = tokens[start:i]
+
+                stop = {
+                    "is", "was", "are", "were", "has", "have", "had",
+                    "located", "which", "that", "who", "whose", "provides",
+                    "offers", "offer", "and", "or", "for", "with", "to",
+                    "in", "on", "at", "of"
+                }
+
+                while phrase and phrase[-1].lower() in stop:
+                    phrase.pop()
+
+                best = []
+
+                for j in range(len(phrase)):
+                    cand = phrase[j:]
+                    letters = "".join(
+                        w[0].upper()
+                        for w in cand
+                        if w.lower() not in {"of", "the", "and", "for", "in", "on", "at", "to", "a", "an"}
+                    )
+
+                    if letters == token:
+                        best = cand
+                        break
+
+                if best:
+                    expansion = " ".join(best)
+                    expansion = re.sub(r'^(The|A|An)\s+', '', expansion, flags=re.I)
+                    mapping[token] = expansion
+
+for _ in range(n):
+    query = input().strip()
+    print(mapping.get(query, query))
