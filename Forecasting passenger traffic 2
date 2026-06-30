@@ -1,0 +1,36 @@
+import sys
+from statistics import mean
+
+# Read input
+n = int(sys.stdin.readline())
+
+values = []
+
+for _ in range(n):
+    parts = sys.stdin.readline().strip().split()
+    values.append(int(parts[1]))
+
+# Forecast next 12 months using seasonal average
+# Since passenger data is monthly, seasonality = 12
+
+season = 12
+
+# If enough data exists, use average of same months
+# from previous years
+forecast = []
+
+for i in range(12):
+    same_month_values = []
+    
+    j = i
+    while j < len(values):
+        same_month_values.append(values[j])
+        j += season
+
+    # Use average of same seasonal months
+    pred = int(mean(same_month_values))
+    forecast.append(pred)
+
+# Print predictions
+for x in forecast:
+    print(x)
