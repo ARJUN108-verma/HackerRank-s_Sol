@@ -1,0 +1,93 @@
+import sys
+import re
+
+def process(text):
+    replacements = {
+        "hed": "he'd",
+        "shed": "she'd",
+        "wed": "we'd",
+        "theyd": "they'd",
+        "youd": "you'd",
+        "itd": "it'd",
+        "Were": "We're",
+        "were": "we're",
+        "Ive": "I've",
+        "ive": "I've",
+        "wont": "won't",
+        "dont": "don't",
+        "doesnt": "doesn't",
+        "didnt": "didn't",
+        "isnt": "isn't",
+        "arent": "aren't",
+        "wasnt": "wasn't",
+        "werent": "weren't",
+        "havent": "haven't",
+        "hasnt": "hasn't",
+        "hadnt": "hadn't",
+        "wouldnt": "wouldn't",
+        "couldnt": "couldn't",
+        "shouldnt": "shouldn't",
+        "mustnt": "mustn't",
+        "cant": "can't",
+        "couldve": "could've",
+        "wouldve": "would've",
+        "shouldve": "should've",
+        "mightve": "might've",
+        "mustve": "must've",
+        "Im": "I'm",
+        "youve": "you've",
+        "theyve": "they've",
+        "weve": "we've",
+        "youll": "you'll",
+        "theyll": "they'll",
+        "itll": "it'll",
+        "ill": "I'll",
+        "lets": "let's",
+        "thats": "that's",
+        "whats": "what's",
+        "whos": "who's",
+        "theres": "there's",
+        "heres": "here's",
+        "hows": "how's",
+        "whys": "why's",
+        "partys": "party's",
+        "oppositions": "opposition's",
+        "Washingtons": "Washington's",
+    }
+
+    pattern = re.compile(
+        r"\b(" + "|".join(
+            re.escape(k)
+            for k in sorted(replacements, key=len, reverse=True)
+        ) + r")\b"
+    )
+
+    text = pattern.sub(lambda m: replacements[m.group(0)], text)
+
+    # Common possessive proper nouns ending in s
+    possessive_nouns = (
+        "Dallas|Texas|Kansas|Arkansas|Charles|James|"
+        "United States|United Nations|"
+        "Las Vegas|Athens|Paris|Kansas City"
+    )
+
+    possessive_context = (
+        "prominence|skyline|architecture|history|population|"
+        "economy|government|role|growth|development|importance|"
+        "airport|residents|citizens|location|area|future|past|"
+        "transportation|climate|culture|landscape"
+    )
+
+    text = re.sub(
+        r"\b(" + possessive_nouns + r")"
+        r"(?= (?:"
+        + possessive_context + r")\b)",
+        lambda m: m.group(1) + "'",
+        text
+    )
+
+    return text
+
+
+text = sys.stdin.read()
+sys.stdout.write(process(text))
